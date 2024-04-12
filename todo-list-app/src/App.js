@@ -5,13 +5,16 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 const TodoItemInputField = (props) => {
+
   const [input, setInput] = useState("");
+
   const onSubmit = () => {
     props.onSubmit(input);
     setInput("");
   };
 
-  return (<div>
+  return (
+  <div>
     <Box
       component="form"
       sx={{
@@ -28,14 +31,21 @@ const TodoItemInputField = (props) => {
       />
       <Button variant="outlined" onClick={onSubmit}>Submit</Button>
     </Box>
-
   </div>);
+};
+
+const TodoItem = (props) => {
+  return (
+    <li>
+      <span>{props.todoItem.todoItemContent}</span>
+    </li>
+  );
 };
 
 const TodoItemList = (props) => {
 
   const todoList = props.todoItemList.map((todoItem, index) => {
-    return <li key={index}>{todoItem.todoItemContent}</li>;
+    return <TodoItem key={index} todoItem={todoItem}/>
   });
 
   return (
