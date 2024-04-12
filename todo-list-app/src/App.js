@@ -47,12 +47,12 @@ const TodoItemList = (props) => {
 
 
 function App() {
+  const [todoItemList, setTodoItemList] = useState([]);
+
   return (
     <div className="App">
       <TodoItemInputField onSubmit={(input) => { console.log(input) }} />
-      <TodoItemList todoItemList={[{
-        todoItemContent: "오늘 할 일 1"
-      }]}/>
+      <TodoItemList todoItemList={todoItemList} />
     </div>
   );
 }
