@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore, collection, addDoc, setDoc, doc, deleteDoc, getDocs, query, orderBy } from "firebase/firestore";
+import { getFirestore, collection, addDoc, setDoc, doc, deleteDoc, getDocs, query, orderBy, where, } from "firebase/firestore";
 import { GoogleAuthProvider, getAuth, signInWithRedirect, onAuthStateChanged, signOut, } from 'firebase/auth';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -148,7 +148,7 @@ function App() {
   });
 
   const syncTodoItemListStateWithFirestore = () => {
-    const q = query(collection(db, "todoItem"), orderBy("createdTime", "desc"));
+    const q = query(collection(db, "todoItem"), where("userId", "==", currentUser), orderBy("createdTime", "desc"));
 
     getDocs(q).then((querySnapshot) => {
       const firestoreTodoItemList = [];
@@ -167,7 +167,7 @@ function App() {
 
   useEffect(() => {
     syncTodoItemListStateWithFirestore();
-  }, []);
+  }, [currentUser]);
 
   const onSubmit = async (newTodoItem) => {
 
