@@ -99,7 +99,7 @@ const db = getFirestore(app);
 function App() {
   const [todoItemList, setTodoItemList] = useState([]);
 
-  useEffect(() => {
+  const syncTodoItemListStateWithFirestore = () => {
     getDocs(collection(db, "todoItem")).then((querySnapshot) => {
       const firestoreTodoItemList = [];
       querySnapshot.forEach((doc) => {
@@ -111,20 +111,20 @@ function App() {
       });
       setTodoItemList(firestoreTodoItemList);
     });
+  };
+
+  useEffect(() => {
+    syncTodoItemListStateWithFirestore();
   }, []);
 
   const onSubmit = async (newTodoItem) => {
 
-    const docRef = await addDoc(collection(db, "todoItem"), {
+    await addDoc(collection(db, "todoItem"), {
       todoItemContent: newTodoItem,
       isFinished: false,
     });
 
-    setTodoItemList([...todoItemList, {
-      id: docRef.id,
-      todoItemContent: newTodoItem,
-      isFinished: false,
-    }]);
+    syncTodoItemListStateWithFirestore();
   };
 
   const onTodoItemClick = async (clickedTodoItem) => {
@@ -132,17 +132,7 @@ function App() {
     const todoItemRef = doc(db, "todoItem", clickedTodoItem.id);
     await setDoc(todoItemRef, { isFinished: !clickedTodoItem.isFinished }, { merge: true });
 
-    setTodoItemList(todoItemList.map((todoItem) => {
-      if (clickedTodoItem.id === todoItem.id) {
-        return {
-          id: clickedTodoItem.id,
-          todoItemContent: clickedTodoItem.todoItemContent,
-          isFinished: !clickedTodoItem.isFinished,
-        };
-      } else {
-        return todoItem;
-      }
-    }));
+    syncTodoItemListStateWithFirestore();
   };
 
   const onRemoveClick = async (removedTodoItem) => {
@@ -150,9 +140,7 @@ function App() {
     const todoItemRef = doc(db, "todoItem", removedTodoItem.id);
     await deleteDoc(todoItemRef);
 
-    setTodoItemList(todoItemList.filter((todoItem) => {
-      return todoItem.id !== removedTodoItem.id;
-    }));
+    syncTodoItemListStateWithFirestore();
   };
 
   return (
