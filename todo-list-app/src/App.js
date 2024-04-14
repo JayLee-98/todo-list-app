@@ -1,5 +1,6 @@
 import './App.css';
 import { useState } from 'react';
+import { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -7,7 +8,7 @@ import Button from '@mui/material/Button';
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore, collection, addDoc, setDoc, doc, deleteDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, setDoc, doc, deleteDoc, getDocs } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -97,6 +98,20 @@ const db = getFirestore(app);
 
 function App() {
   const [todoItemList, setTodoItemList] = useState([]);
+
+  useEffect(() => {
+    getDocs(collection(db, "todoItem")).then((querySnapshot) => {
+      const firestoreTodoItemList = [];
+      querySnapshot.forEach((doc) => {
+        firestoreTodoItemList.push({
+          id: doc.id,
+          todoItemContent: doc.data().todoItemContent,
+          isFinished: doc.data().isFinished,
+        });
+      });
+      setTodoItemList(firestoreTodoItemList);
+    });
+  }, []);
 
   const onSubmit = async (newTodoItem) => {
 
