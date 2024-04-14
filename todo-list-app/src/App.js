@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore, collection, addDoc, setDoc, doc, deleteDoc, getDocs, query, orderBy } from "firebase/firestore";
+import { GoogleAuthProvider, getAuth, signInWithRedirect, onAuthStateChanged, signOut, } from 'firebase/auth';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -30,6 +31,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+const auth = getAuth(app);
 
 const TodoItemInputField = (props) => {
 
@@ -97,23 +101,51 @@ const TodoItemList = (props) => {
 };
 
 let todoItemId = 0;
-const db = getFirestore(app);
 
 const TodoListHeader = (props) => {
+
+  const loginWithGoogleButton = (
+    <Button
+      color='inherit'
+      onClick={() => { signInWithRedirect(auth, provider); }}
+    >
+      구글 아이디로 로그인하기
+    </Button>
+  );
+  const logoutButton = (
+    <Button
+     color='inherit'
+     onClick={()=>{signOut(auth);}}
+    >
+      로그아웃
+    </Button>
+  );
+
+  const button = props.currentUser === null ? loginWithGoogleButton : logoutButton;
+
   return (
     <AppBar position='static'>
       <Toolbar>
         <Typography variant='h6' component="div" sx={{ flexGrow: 1 }}>
           Jay's Todo List App
         </Typography>
-        <Button color='inherit'>로그인</Button>
+        {button}
       </Toolbar>
     </AppBar>
   );
 }
 
 function App() {
+  const [currentUser, setCurrentUser] = useState(null);
   const [todoItemList, setTodoItemList] = useState([]);
+
+  onAuthStateChanged(auth, (user) => {
+    if(user) {
+      setCurrentUser(user.uid);
+    } else {
+      setCurrentUser(null);
+    }
+  });
 
   const syncTodoItemListStateWithFirestore = () => {
     const q = query(collection(db, "todoItem"), orderBy("createdTime", "desc"));
@@ -165,7 +197,7 @@ function App() {
 
   return (
     <div className="App">
-      <TodoListHeader />
+      <TodoListHeader currentUser={currentUser} />
       <TodoItemInputField onSubmit={onSubmit} />
       <TodoItemList
         todoItemList={todoItemList}
