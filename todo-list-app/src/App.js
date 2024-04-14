@@ -17,7 +17,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import Link from '@mui/material/Link';
+import FacebookIcon from '@mui/icons-material/GitHub';
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -107,15 +108,13 @@ const TodoItemList = (props) => {
   });
 
   return (
-    <Box>
+    <Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
       <List sx={{ margin: "auto", maxWidth: 720 }}>
         {todoList}
       </List>
     </Box>
   );
 };
-
-let todoItemId = 0;
 
 const TodoListHeader = (props) => {
 
@@ -149,6 +148,144 @@ const TodoListHeader = (props) => {
       </Toolbar>
     </AppBar>
   );
+}
+
+const TodoListFooter = (props) => {
+
+  const Copyright = () => {
+    return (
+      <Typography variant="body2" color="text.secondary" mt={1}>
+        {'Copyright © '}
+        <Link href="">Jay Lee&nbsp;</Link>
+        {new Date().getFullYear()}
+      </Typography>
+    );
+  }
+
+  return (
+    <Container
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: { xs: 4, sm: 8 },
+        py: { xs: 8, sm: 10 },
+        textAlign: { sm: 'center', md: 'left' },
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          width: '100%',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 4,
+            minWidth: { xs: '100%', sm: '60%' },
+          }}
+        >
+          <Box sx={{ width: { xs: '100%', sm: '60%' } }}>
+            <div>
+              <Link color="text.secondary" href="#">
+                Privacy Policy
+              </Link>
+              <Typography display="inline" sx={{ mx: 0.5, opacity: 0.5 }}>
+                &nbsp;•&nbsp;
+              </Typography>
+              <Link color="text.secondary" href="#">
+                Terms of Service
+              </Link>
+              <Copyright />
+            </div>
+            <Stack
+              direction="row"
+              justifyContent="left"
+              spacing={1}
+              useFlexGap
+              sx={{
+                color: 'text.secondary',
+              }}
+            >
+              <IconButton
+                color="inherit"
+                href="https://github.com/JayLee-98"
+                aria-label="GitHub"
+                sx={{ alignSelf: 'center' }}
+              >
+                <FacebookIcon />
+              </IconButton>
+            </Stack>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            flexDirection: 'column',
+            gap: 1,
+          }}
+        >
+          <Typography variant="body2" fontWeight={600}>
+            Blog
+          </Typography>
+          <Link color="text.secondary" href="#">
+            Coming soon
+          </Link>
+          <Link color="text.secondary" href="#">
+            Instagram
+          </Link>
+          <Link color="text.secondary" href="#">
+            Youtube
+          </Link>
+        </Box>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            flexDirection: 'column',
+            gap: 1,
+          }}
+        >
+          <Typography variant="body2" fontWeight={600}>
+            Encyclopedia
+          </Typography>
+          <Link color="text.secondary" href="#">
+            About me
+          </Link>
+          <Link color="text.secondary" href="#">
+            Recent KDA
+          </Link>
+          <Link color="text.secondary" href="#">
+            Workout routines
+          </Link>
+          <Link color="text.secondary" href="#">
+            Daily rates on how I feel
+          </Link>
+        </Box>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            flexDirection: 'column',
+            gap: 1,
+          }}
+        >
+          <Typography variant="body2" fontWeight={600}>
+            Illaoi
+          </Typography>
+          <Link color="text.secondary" href="#">
+            Nagakabouros
+          </Link>
+          <Link color="text.secondary" href="#">
+            Project L
+          </Link>
+        </Box>
+      </Box>
+    </Container>
+  );
+
 }
 
 function App() {
@@ -224,6 +361,7 @@ function App() {
           onRemoveClick={onRemoveClick}
         />
       </Container>
+      <TodoListFooter />
     </div>
   );
 }
